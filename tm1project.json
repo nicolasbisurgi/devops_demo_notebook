@@ -1,0 +1,236 @@
+{
+  "Version": "1.0",
+  "Name": "standard_tm1project",
+  "Ignore": [
+    "Cubes",
+    "Dimensions",
+    "!Processes('}bedrock*')"
+  ],
+  "Files": [
+    "source_files/cubes/*.*",
+    "source_files/cubes/rules/*.*",
+    "source_files/data/*.*",
+    "source_files/dimensions/*.*",
+    "source_files/misc/*.*",
+    "source_files/scripts/*.*"
+  ],
+  "Deployment": {
+    "DEV": {
+      "Settings": {
+        "Administration": {
+          "PerformanceMonitorOn": true,
+          "PerfMonActive": true,
+          "TopLog": {
+            "Enable": true
+          }
+        },
+        "Modelling": {
+          "TI": {
+            "EnableTIDebugging": true
+          }
+        }
+      },
+      "Tasks": {
+        "import_dimensions_from_file": {
+          "Process": "Processes('sys_import_dimensions_from_file')"
+        },
+        "import_cubes_from_file": {
+          "Process": "Processes('sys_import_cubes_from_file')",
+          "Dependencies": [
+            "Tasks('import_dimensions_from_file')"
+          ]
+        },
+        "export_dimensions_to_file": {
+          "Process": "Processes('sys_export_dimensions_to_file')"
+        },
+        "export_cubes_to_file": {
+          "Process": "Processes('sys_export_cubes_to_file')"
+        },
+        "export_data_to_file": {
+          "Process": "Processes('sys_export_data_to_file')"
+        }
+      },
+      "PrePush": [
+        "Tasks('export_dimensions_to_file')",
+        "Tasks('export_cubes_to_file')",
+        "Tasks('export_data_to_file')"
+      ],
+      "PostPull": [
+        "Tasks('import_dimensions_from_file')",
+        "Tasks('import_cubes_from_file')"
+      ]
+    },
+    "SIT": {
+      "Settings": {
+        "Administration": {
+          "PerformanceMonitorOn": true,
+          "PerfMonActive": true,
+          "TopLog": {
+            "Enable": true
+          }
+        },
+        "Modelling": {
+          "TI": {
+            "EnableTIDebugging": true
+          }
+        }
+      },
+      "Tasks": {
+        "import_dimensions_from_file": {
+          "Process": "Processes('sys_import_dimensions_from_file')"
+        },
+        "import_cubes_from_file": {
+          "Process": "Processes('sys_import_cubes_from_file')",
+          "Dependencies": [
+            "Tasks('import_dimensions_from_file')"
+          ]
+        },
+        "import_data_from_file": {
+          "Process": "Processes('sys_import_data_from_file')",
+          "Dependencies": [
+            "Tasks('import_cubes_from_file')"
+          ]
+        },
+        "post_deployment": {
+          "Process": "Processes('sys_post_deploment_steps')",
+          "Dependencies": [
+            "Tasks('import_data_from_file')"
+          ]
+        },
+        "unit_test": {
+          "Process": "Processes('sys_unit_test')",
+          "Dependencies": [
+            "Tasks('post_deployment')"
+          ]
+        }
+      },
+      "PostPull": [
+        "Tasks('import_dimensions_from_file')",
+        "Tasks('import_cubes_from_file')",
+        "Tasks('import_data_from_file')",
+        "Tasks('post_deployment')",
+        "Tasks('unit_test')"
+      ]
+    },
+    "PERF": {
+      "Settings": {
+        "Administration": {
+          "PerformanceMonitorOn": false,
+          "PerfMonActive": false,
+          "TopLog": {
+            "Enable": true
+          }
+        },
+        "Modelling": {
+          "TI": {
+            "EnableTIDebugging": false
+          }
+        }
+      },
+      "Tasks": {
+        "import_dimensions_from_file": {
+          "Process": "Processes('sys_import_dimensions_from_file')"
+        },
+        "import_cubes_from_file": {
+          "Process": "Processes('sys_import_cubes_from_file')",
+          "Dependencies": [
+            "Tasks('import_dimensions_from_file')"
+          ]
+        },
+        "import_data_from_file": {
+          "Process": "Processes('sys_import_data_from_file')",
+          "Dependencies": [
+            "Tasks('import_cubes_from_file')"
+          ]
+        },
+        "post_deployment": {
+          "Process": "Processes('sys_post_deploment_steps')",
+          "Dependencies": [
+            "Tasks('import_data_from_file')"
+          ]
+        },
+        "unit_test": {
+          "Process": "Processes('sys_unit_test')",
+          "Dependencies": [
+            "Tasks('post_deployment')"
+          ]
+        },
+        "performance_test": {
+          "Process": "Processes('sys_performance_test')",
+          "Dependencies": [
+            "Tasks('unit_test')"
+          ]
+        }
+      },
+      "PostPull": [
+        "Tasks('import_dimensions_from_file')",
+        "Tasks('import_cubes_from_file')",
+        "Tasks('import_data_from_file')",
+        "Tasks('post_deployment')",
+        "Tasks('unit_test')",
+        "Tasks('performance_test')"
+      ]
+    },
+    "PROD": {
+      "Settings": {
+        "Administration": {
+          "PerformanceMonitorOn": false,
+          "PerfMonActive": false,
+          "TopLog": {
+            "Enable": true
+          }
+        },
+        "Modelling": {
+          "TI": {
+            "EnableTIDebugging": false
+          }
+        }
+      },
+      "Tasks": {
+        "import_dimensions_from_file": {
+          "Process": "Processes('sys_import_dimensions_from_file')"
+        },
+        "import_cubes_from_file": {
+          "Process": "Processes('sys_import_cubes_from_file')",
+          "Dependencies": [
+            "Tasks('import_dimensions_from_file')"
+          ]
+        },
+        "import_data_from_file": {
+          "Process": "Processes('sys_import_data_from_file')",
+          "Dependencies": [
+            "Tasks('import_cubes_from_file')"
+          ]
+        },
+        "post_deployment": {
+          "Process": "Processes('sys_post_deploment_steps')",
+          "Dependencies": [
+            "Tasks('import_data_from_file')"
+          ]
+        },
+        "back_up": {
+          "Process": "Processes('sys_backup_model')"
+        },
+        "export_dimensions_to_file": {
+          "Process": "Processes('sys_export_dimensions_to_file')"
+        },
+        "export_cubes_to_file": {
+          "Process": "Processes('sys_export_cubes_to_file')"
+        }
+      },
+      "PrePush": [
+        "Tasks('export_dimensions_to_file')",
+        "Tasks('export_cubes_to_file')"
+      ],
+      "PrePull": [
+        "Tasks('back_up')"
+      ],
+      "PostPull": [
+        "Tasks('import_dimensions_from_file')",
+        "Tasks('import_cubes_from_file')",
+        "Tasks('import_data_from_file')",
+        "Tasks('post_deployment')"
+      ]
+    }
+  }
+}
